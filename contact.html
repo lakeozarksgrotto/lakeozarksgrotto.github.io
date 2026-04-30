@@ -431,6 +431,14 @@
             }
         }
     </style>
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-25KR2EH5YK"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-25KR2EH5YK');
+</script>
 </head>
 <body>
     <header class="header">
@@ -498,32 +506,68 @@
 
                 <div class="contact-form">
                     <h2>Send Us a Message</h2>
-                    <form action="mailto:contact@lakeozarksgrotto.com" method="POST" enctype="text/plain">
+                    <form action="https://api.web3forms.com/submit" method="POST" id="contact-form">
+                        <input type="hidden" name="access_key" value="329b4bcd-29f5-4e2d-8d6d-55283c89d395">
+                        <input type="checkbox" name="botcheck" style="display:none">
+
                         <div class="form-group">
                             <label for="name">Name *</label>
                             <input type="text" id="name" name="name" required>
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="email">Email *</label>
                             <input type="email" id="email" name="email" required>
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="subject">Subject *</label>
                             <input type="text" id="subject" name="subject" required>
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="message">Message *</label>
                             <textarea id="message" name="message" required></textarea>
                         </div>
-                        
+
                         <button type="submit" class="submit-button">Send Message</button>
+                        <div id="form-result" style="display:none; margin-top:1rem; text-align:center; font-weight:500;"></div>
                     </form>
-                    <p style="margin-top: 1rem; color: #7f8c8d; font-size: 0.9rem; text-align: center;">
-                        Note: This form will open your email client. You can also email us directly at <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="22414d4c56434156624e4349474d584350495145504d56564d0c414d4f">[email&#160;protected]</a>
-                    </p>
+
+                    <script>
+                        const form = document.getElementById('contact-form');
+                        form.addEventListener('submit', function(e) {
+                            e.preventDefault();
+                            const result = document.getElementById('form-result');
+                            const button = form.querySelector('.submit-button');
+                            button.textContent = 'Sending...';
+                            button.disabled = true;
+                            fetch('https://api.web3forms.com/submit', { method: 'POST', body: new FormData(form) })
+                                .then(res => res.json())
+                                .then(data => {
+                                    result.style.display = 'block';
+                                    if (data.success) {
+                                        result.style.color = '#27ae60';
+                                        result.textContent = 'Message sent! We will get back to you soon.';
+                                        form.reset();
+                                        button.textContent = 'Send Message';
+                                        button.disabled = false;
+                                    } else {
+                                        result.style.color = '#e74c3c';
+                                        result.textContent = 'Something went wrong. Please try again.';
+                                        button.textContent = 'Send Message';
+                                        button.disabled = false;
+                                    }
+                                })
+                                .catch(() => {
+                                    result.style.display = 'block';
+                                    result.style.color = '#e74c3c';
+                                    result.textContent = 'Something went wrong. Please try again.';
+                                    button.textContent = 'Send Message';
+                                    button.disabled = false;
+                                });
+                        });
+                    </script>
                 </div>
             </div>
 
